@@ -26,21 +26,17 @@ Build a robust sentiment analysis pipeline that:
 
 ## 🔁 Workflow Overview
 
-[Raw Feedback Data]
-↓
-[Preprocessing (cleaning, tokenization)]
-↓
-[Sentiment & Theme Analysis (ML/NLP)]
-↓
-[Tagged & Scored Feedback]
-↓
-[Data Lake (MinIO) Storage]
-↓
-[Dashboard / BI Reports]
-
-yaml
-Kopiëren
-Bewerken
+    [Raw Feedback Data]
+         ↓
+    [Preprocessing (cleaning, tokenization)]
+         ↓
+    [Sentiment & Theme Analysis (ML/NLP)]
+         ↓
+    [Tagged & Scored Feedback]
+         ↓
+    [Data Lake (MinIO) Storage]
+         ↓
+    [Dashboard / BI Reports]
 
 ---
 
@@ -85,10 +81,13 @@ Bewerken
   "sentiment_label": "neutral",
   "themes": ["support", "response time", "agent behavior"]
 }
-📁 Storage Layout (MinIO)
-markdown
-Kopiëren
-Bewerken
+```
+
+---
+
+## 📁 Storage Layout (MinIO)
+
+```
 minio/
 └── feedback/
     └── enriched/
@@ -96,29 +95,35 @@ minio/
             ├── 2025/
             │   ├── 05/
             │   │   └── feedback_sentiment_2025-05-25.parquet
-📈 Evaluation Metrics
-Metric	Description
-Accuracy	Correctly labeled sentiment ratio
-Precision / Recall	Per sentiment category
-F1-Score	Balanced performance indicator
-Topic Coherence	Relevance and consistency of extracted themes
+```
 
-🔐 Privacy & Ethics
-Anonymize or pseudonymize personal identifiers
+---
+            
+## 📈 Evaluation Metrics
 
-Avoid profiling individuals with sentiment data
+- Metric	Description
+- Accuracy	Correctly labeled sentiment ratio
+- Precision / Recall	Per sentiment category
+- F1-Score	Balanced performance indicator
+- Topic Coherence	Relevance and consistency of extracted themes
 
-Ensure compliance with GDPR / privacy laws
+---
 
-🧩 Next Steps
-Select baseline models (TextBlob/VADER)
+## 🔐 Privacy & Ethics
 
-Annotate or gather labeled data for fine-tuning
+- Anonymize or pseudonymize personal identifiers
+- Avoid profiling individuals with sentiment data
+- Ensure compliance with GDPR / privacy laws
 
-Train/test ML models and validate performance
+---
 
-Integrate with feedback pipeline and store results in MinIO
+## 🧩 Next Steps
 
-Build dashboards to visualize sentiment trends and themes
+- Select baseline models (TextBlob/VADER)
+- Annotate or gather labeled data for fine-tuning
+- Train/test ML models and validate performance
+- Integrate with feedback pipeline and store results in MinIO
+- Build dashboards to visualize sentiment trends and themes
+- Prepared for GitHub documentation — giving voice to your customers through AI 💬
 
-Prepared for GitHub documentation — giving voice to your customers through AI 💬
+---

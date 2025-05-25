@@ -31,13 +31,13 @@ Data Lake (MinIO - S3)
 
 ## ⚙️ Technologies Used
 
-| Layer            | Tool / Technology |
-|------------------|-------------------|
-| Data Collection  | Apache NiFi / Python ETL scripts |
-| Messaging Layer  | Apache Kafka (secured) |
+| Layer            | Tool / Technology                                      |
+|------------------|--------------------------------------------------------|
+| Data Collection  | Apache NiFi / Java ETL scripts                         |
+| Messaging Layer  | Apache Kafka (secured)                                 |
 | Stream Processing| Kafka Consumers (Spark Structured Streaming or Python) |
-| Storage          | MinIO (object storage) |
-| Security         | TLS, SASL, role-based access control |
+| Storage          | MinIO (object storage)                                 |
+| Security         | TLS, SASL, role-based access control                   |
 
 ---
 

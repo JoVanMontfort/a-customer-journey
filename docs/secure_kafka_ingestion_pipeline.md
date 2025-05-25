@@ -31,13 +31,13 @@ Data Lake (MinIO - S3)
 
 ## ⚙️ Technologies Used
 
-| Layer            | Tool / Technology                                      |
-|------------------|--------------------------------------------------------|
-| Data Collection  | Apache NiFi / Java ETL scripts                         |
-| Messaging Layer  | Apache Kafka (secured)                                 |
-| Stream Processing| Kafka Consumers (Spark Structured Streaming or Python) |
-| Storage          | MinIO (object storage)                                 |
-| Security         | TLS, SASL, role-based access control                   |
+| Layer            | Tool / Technology                                    |
+|------------------|------------------------------------------------------|
+| Data Collection  | Apache NiFi / Java-Groovy ETL scripts                |
+| Messaging Layer  | Apache Kafka (secured)                               |
+| Stream Processing| Kafka Consumers (Spark Structured Streaming or Java) |
+| Storage          | MinIO (object storage)                               |
+| Security         | TLS, SASL, role-based access control                 |
 
 ---
 
@@ -75,7 +75,7 @@ cleanup.policy: delete
 - Kafka Connect can be used optionally to source feedback from databases or REST APIs.
 
 ### 3. **Kafka Consumer Service**
-- Deployed using Python or Apache Spark
+- Deployed using Java or Apache Spark
 - Stream feedback data, apply schema validation and enrichment
 - Write to MinIO in batch or micro-batch mode (Parquet/JSON)
 
@@ -147,7 +147,7 @@ Use structured folder layout and object naming convention (e.g., `/YYYY/MM/DD/fe
 ## 📘 Deliverables
 
 - Secure Kafka topic with proper ACLs
-- Working NiFi pipeline or Python ETL script
+- Working NiFi pipeline or Java/Groovy ETL script
 - Kafka consumer with MinIO sink
 - Monitoring dashboards
 - Test coverage reports

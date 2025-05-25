@@ -124,6 +124,7 @@ minio/
 - Train/test ML models and validate performance
 - Integrate with feedback pipeline and store results in MinIO
 - Build dashboards to visualize sentiment trends and themes
-- Prepared for GitHub documentation — giving voice to your customers through AI 💬
 
 ---
+
+* Prepared for GitHub documentation — giving voice to your customers through AI 💬

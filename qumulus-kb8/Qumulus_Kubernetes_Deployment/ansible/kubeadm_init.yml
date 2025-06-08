@@ -1,0 +1,38 @@
+- hosts: k8s-master
+  become: yes
+  tasks:
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - docker.io
+        - apt-transport-https
+        - curl
+
+    - name: Add Kubernetes GPG key
+      shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+    - name: Add Kubernetes repo
+      copy:
+        dest: /etc/apt/sources.list.d/kubernetes.list
+        content: |
+          deb https://apt.kubernetes.io/ kubernetes-xenial main
+
+    - name: Install Kubernetes components
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: Initialize Kubernetes
+      shell: kubeadm init --pod-network-cidr=10.244.0.0/16
+      register: init_output
+      ignore_errors: yes
+
+    - name: Save join command
+      shell: kubeadm token create --print-join-command > /tmp/kubeadm_join.sh

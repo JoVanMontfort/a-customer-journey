@@ -1,0 +1,16 @@
+nifi:
+  enabled: true
+  image:
+    repository: apache/nifi
+    tag: latest
+
+minio:
+  enabled: true
+  accessKey: admin
+  secretKey: password
+
+springBootApp:
+  enabled: true
+  image:
+    repository: your-registry/triggeriq-backend
+    tag: latest

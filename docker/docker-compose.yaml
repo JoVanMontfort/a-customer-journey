@@ -1,0 +1,208 @@
+# 📦 docker-compose.yaml — TriggerIQ Local Dev Stack
+
+version: '3.8'
+
+services:
+  nifi:
+    image: apache/nifi:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - NIFI_WEB_HTTP_PORT=8080
+    volumes:
+      - ./nifi/conf:/opt/nifi/nifi-current/conf
+    networks:
+      - triggeriq
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ./minio/data:/data
+    networks:
+      - triggeriq
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: triggeriq
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: triggeriq_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - triggeriq
+
+  fallback-api:
+    build: ./fallback-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    networks:
+      - triggeriq
+
+volumes:
+  pgdata:
+
+networks:
+  triggeriq:
+    driver: bridge
+
+---
+
+# 🐳 fallback-service/Dockerfile
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY target/fallback-service.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+---
+
+# ☸️ Kubernetes Manifests (kubernetes/deployment.yaml)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fallback-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fallback-api
+  template:
+    metadata:
+      labels:
+        app: fallback-api
+    spec:
+      containers:
+        - name: fallback-api
+          image: yourregistry/fallback-api:latest
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: cloud
+
+---
+
+# ☸️ Kubernetes Service (kubernetes/service.yaml)
+apiVersion: v1
+kind: Service
+metadata:
+  name: fallback-api
+spec:
+  selector:
+    app: fallback-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8081
+  type: ClusterIP
+
+---
+
+# 🚀 GitHub Actions CI/CD (.github/workflows/deploy.yaml)
+name: CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Spring Boot App
+        run: |
+          cd fallback-service
+          ./mvnw package -DskipTests
+
+      - name: Docker Build and Push
+        run: |
+          docker build -t yourregistry/fallback-api:latest ./fallback-service
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker push yourregistry/fallback-api:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f kubernetes/deployment.yaml
+          kubectl apply -f kubernetes/service.yaml
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+
+---
+
+# 📘 README.md — TriggerIQ Dev Stack
+
+## 🚀 Overview
+  This is a complete local-to-cloud DevOps stack for TriggerIQ, integrating Apache NiFi, PostgreSQL, MinIO, and a Spring Boot fallback API. It supports both local Docker Compose development and cloud-native Kubernetes deployment.
+
+## 🔧 Requirements
+- Docker + Docker Compose
+- Java 17 SDK
+- Kubernetes (e.g. Minikube, GKE, EKS)
+- GitHub Actions configured with `DOCKER_USERNAME`, `DOCKER_PASSWORD`, and `KUBECONFIG` secrets
+
+## 🛠 Local Development
+  ```bash
+  # Start the full dev stack
+  docker-compose up --build
+
+# Access services
+NiFi:        http://localhost:8080
+MinIO:       http://localhost:9001 (user: minioadmin)
+PostgreSQL:  localhost:5432 (user: triggeriq)
+Fallback API: http://localhost:8081
+  ```
+  
+  ## ☸️ Kubernetes Deployment
+  ```bash
+  # Build & push container manually (if not using GitHub Actions)
+  docker build -t yourregistry/fallback-api:latest ./fallback-service
+  
+  docker push yourregistry/fallback-api:latest
+  
+  # Deploy to Kubernetes
+  kubectl apply -f kubernetes/deployment.yaml
+  kubectl apply -f kubernetes/service.yaml
+  ```
+
+## ⚙️ CI/CD with GitHub Actions
+The workflow at `.github/workflows/deploy.yaml` handles:
+  - Building the Spring Boot app
+  - Dockerizing and pushing to registry
+  - Deploying to Kubernetes
+
+Ensure you set GitHub repository secrets:
+  - `DOCKER_USERNAME`
+  - `DOCKER_PASSWORD`
+  - `KUBECONFIG` (base64 or plaintext content)
+
+  ## 📚 Notes
+  - Customize `fallback-service` to handle failed API ingestion gracefully.
+  - NiFi flows can be built visually and exported as templates for portability.
+  - You can add Prometheus/Grafana to monitor flow metrics in future iterations.
+
+---
+
+Happy shipping TriggerIQ 🚀

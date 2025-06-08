@@ -1,0 +1,22 @@
+- hosts: k8s-worker
+  become: yes
+  tasks:
+    - name: Install Docker and Kubernetes components
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - docker.io
+        - apt-transport-https
+        - curl
+        - kubelet
+        - kubeadm
+
+    - name: Fetch join command from master
+      fetch:
+        src: /tmp/kubeadm_join.sh
+        dest: /tmp/kubeadm_join.sh
+        flat: yes
+
+    - name: Join cluster
+      shell: bash /tmp/kubeadm_join.sh

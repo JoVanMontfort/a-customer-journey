@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<template>
+  <name>TriggerIQTemplate</name>
+  <description>Handles TriggerIQ data logic</description>
+  <snippet>
+    <processors>
+      <id>proc-1</id>
+      <name>ReceiveTriggerData</name>
+      <type>org.apache.nifi.processors.standard.ListenHTTP</type>
+    </processors>
+    <processors>
+      <id>proc-2</id>
+      <name>TransformData</name>
+      <type>org.apache.nifi.processors.standard.ReplaceText</type>
+    </processors>
+    <processors>
+      <id>proc-3</id>
+      <name>RouteData</name>
+      <type>org.apache.nifi.processors.standard.RouteOnAttribute</type>
+    </processors>
+  </snippet>
+</template>

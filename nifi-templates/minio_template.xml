@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<template>
+  <name>MinIOIntegrationTemplate</name>
+  <description>Uploads to MinIO bucket</description>
+  <snippet>
+    <processors>
+      <id>proc-1</id>
+      <name>FetchData</name>
+      <type>org.apache.nifi.processors.standard.GetFile</type>
+    </processors>
+    <processors>
+      <id>proc-2</id>
+      <name>PutToMinIO</name>
+      <type>org.apache.nifi.processors.aws.s3.PutS3Object</type>
+    </processors>
+  </snippet>
+</template>

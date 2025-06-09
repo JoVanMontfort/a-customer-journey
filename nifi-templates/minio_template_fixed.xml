@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<template>
+    <name>MinIOTemplate</name>
+    <description>MinIO Integration Template</description>
+    <snippet encoding-version="1.3">
+        <processor>
+            <id>miniotemplate-proc-1</id>
+            <name>GetFile</name>
+            <type>org.apache.nifi.processors.standard.GetFile</type>
+            <bundle>
+                <group>org.apache.nifi</group>
+                <artifact>nifi-standard-nar</artifact>
+                <version>1.28.1</version>
+            </bundle>
+        </processor>
+        <processor>
+            <id>miniotemplate-proc-2</id>
+            <name>PutS3Object</name>
+            <type>org.apache.nifi.processors.aws.s3.PutS3Object</type>
+            <bundle>
+                <group>org.apache.nifi</group>
+                <artifact>nifi-standard-nar</artifact>
+                <version>1.28.1</version>
+            </bundle>
+        </processor>
+    </snippet>
+</template>

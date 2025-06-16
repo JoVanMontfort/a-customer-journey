@@ -30,3 +30,6 @@
 
 # Ignore custom settings for run/debug configurations
 .idea/runConfigurations/
+
+# Ignore terraform builds
+.terraform/**
